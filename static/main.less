@@ -1,0 +1,42 @@
+
+.main{
+  background-color:#EDEDED;
+  height:100vh;
+  display:flex;
+  flex-wrap: wrap;
+  .block{
+    width:50%;
+    height:50%;
+    border:1px solid #ccc;
+    box-sizing: border-box;
+    position: relative;
+    &.full{
+      position:fixed;
+      width:100%;
+      height:100%;
+      z-index:999;
+      background-color:#EDEDED;
+    }
+    .view-block{
+      width:100%;
+      height:100%;
+    }
+    .control{
+      position: absolute;
+      bottom:0;
+      width:100%;
+      height:50px;
+      .control-block{
+        display:none;
+        background:rgba(64, 169, 255,0.8)
+      }
+      &:hover .control-block{
+        display:block;
+        padding:0 10px;
+        height:100%;
+        line-height: 50px;
+        z-index: 99;
+      }
+    }
+  } 
+}
