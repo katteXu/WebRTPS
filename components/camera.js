@@ -79,7 +79,6 @@ const Camera = ({ index }) => {
       } catch (error) {
         // 异常处理
         const canvas = main.getElementsByClassName(styles['view-block'])[0];
-        console.log(canvas);
         if (canvas) {
           main.removeChild(canvas);
         }

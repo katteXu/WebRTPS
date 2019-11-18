@@ -76,7 +76,6 @@ const createStream = (key, subtype) => {
     url: `${ChannelList[key]}&subtype=${subtype}`,
     port: _p
   }
-  console.log(opt.url);
   const _stream = new Stream(opt);
   //  绑定事件
   bindEvent(_stream);
