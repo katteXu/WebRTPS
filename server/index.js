@@ -14,8 +14,8 @@ app.prepare().then(() => {
 
   // 创建流
   router.get("/api/createStream", async ctx => {
-    const { key } = ctx.query;
-    const { port, msg } = socket.createStream(key);
+    const { key, subtype } = ctx.query;
+    const { port, msg } = socket.createStream(key, subtype);
 
     ctx.body = {
       status: 0,

@@ -5,8 +5,8 @@ import styles from '../static/camera.less';
 
 
 const ChannelList = {
-  1: [-1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27],
-  2: [-1, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46]
+  1: [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27],
+  2: [-1, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47]
 }
 
 // 摄像头窗口
@@ -71,14 +71,29 @@ const Camera = ({ index }) => {
   }
 
   // 全屏放大缩小
-  const changeScreen = () => {
+  const changeScreen = async () => {
+    // 设置高清
+    if (player) {
+      try {
+        player.destroy();
+      } catch (error) {
+        // 异常处理
+        const canvas = main.getElementsByClassName(styles['view-block'])[0];
+        console.log(canvas);
+        if (canvas) {
+          main.removeChild(canvas);
+        }
+      }
+    }
+    await initStream(channel, !full ? 0 : 1);
     setFull(!full);
   }
 
   // 创建连接流
-  const initStream = async (c) => {
+  const initStream = async (c, subtype = 1) => {
     const params = {
-      key: c
+      key: c,
+      subtype
     }
     // 创建流 获取端口号
     const { port, msg } = await createStream({ params });
@@ -151,7 +166,7 @@ const Camera = ({ index }) => {
             <Col span={5}>
               <select name="" id="" style={{ height: '100%', width: '100%' }} onChange={(e) => changeView(e.target.value)}>
                 {
-                  ChannelList[place].map(item => <option key={item} value={item}>{item === -1 ? '请选择' : `频道-${item}`}</option>)
+                  ChannelList[place].map((item, index) => <option key={item} value={item}>{item === -1 ? '请选择' : `频道-${index}`}</option>)
                 }
               </select>
             </Col>
