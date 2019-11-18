@@ -5,9 +5,8 @@ import styles from '../static/camera.less';
 
 
 const ChannelList = {
-  1: [-1, 1, 2],
-  2: [-1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
-  3: [-1, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]
+  1: [-1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27],
+  2: [-1, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46]
 }
 
 // 摄像头窗口
@@ -54,7 +53,6 @@ const Camera = ({ index }) => {
   }
 
   const changeView = async (item) => {
-    console.log(item);
     if (item === '-1') {
       return;
     }
@@ -65,7 +63,7 @@ const Camera = ({ index }) => {
         // 异常处理
         const canvas = main.getElementsByClassName(styles['view-block'])[0];
         if (canvas) {
-          main.removeChild(document.getElementsByClassName(styles['view-block'])[0]);
+          main.removeChild(canvas);
         }
       }
     }
@@ -116,8 +114,9 @@ const Camera = ({ index }) => {
       } catch (error) {
         // 异常处理
         const canvas = main.getElementsByClassName(styles['view-block'])[0];
+        console.log(canvas);
         if (canvas) {
-          main.removeChild(document.getElementsByClassName(styles['view-block'])[0]);
+          main.removeChild(canvas);
         }
       }
     }
@@ -145,9 +144,8 @@ const Camera = ({ index }) => {
             </Col>
             <Col span={5}>
               <select name="" id="" style={{ height: '100%', width: '100%' }} onChange={onSelectPlace}>
-                <option value="1">其他</option>
-                <option value="2">煤矿</option>
-                <option value="3">受煤站</option>
+                <option value="1">煤矿</option>
+                <option value="2">受煤站</option>
               </select>
             </Col>
             <Col span={5}>

@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "LOCAL=true node server",
-    "start": "next build && node server"
+    "start": "next build && node server",
+    "build":"next build"
   },
   "dependencies": {
     "@zeit/next-css": "^1.0.1",
