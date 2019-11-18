@@ -4,8 +4,14 @@ import { createStream } from '../service/api';
 import styles from '../static/camera.less';
 
 
+const ChannelList = {
+  1: [-1, 1, 2],
+  2: [-1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
+  3: [-1, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48]
+}
+
 // 摄像头窗口
-const Camera = () => {
+const Camera = ({ index }) => {
   // 当前窗口实例
   let main = null;
   let ctrlDom = null;
@@ -18,11 +24,13 @@ const Camera = () => {
   const [full, setFull] = useState(false);
 
   // 当前频道
-  const [channel, changeChannel] = useState('channel1');
+  const [channel, changeChannel] = useState(`channel${index + 1}`);
 
   // 播放器
   const [player, setPlayer] = useState();
 
+  // 地点频道
+  const [place, setPlace] = useState(1);
   useEffect(() => {
     (async () => {
       await initStream(channel);
@@ -45,16 +53,23 @@ const Camera = () => {
     }
   }
 
-  const changeView = async (channel) => {
+  const changeView = async (item) => {
+    console.log(item);
+    if (item === '-1') {
+      return;
+    }
     if (player) {
       try {
-        player.destroy();
+        const result = player.destroy();
       } catch (error) {
-        // 异常信息
-        // console.error(error);
+        // 异常处理
+        const canvas = main.getElementsByClassName(styles['view-block'])[0];
+        if (canvas) {
+          main.removeChild(document.getElementsByClassName(styles['view-block'])[0]);
+        }
       }
     }
-    changeChannel(channel);
+    changeChannel(`channel${item}`);
   }
 
   // 全屏放大缩小
@@ -83,18 +98,42 @@ const Camera = () => {
     const _canvas = document.createElement('canvas');
     _canvas.className = styles['view-block'];
     const _player = new window.JSMpeg.Player(`ws://${document.location.hostname}:${port}`, { canvas: _canvas });
+
     main.insertBefore(_canvas, ctrlDom);
     setPlayer(_player);
+  }
+
+  // 切换地点
+  const onSelectPlace = (e) => {
+    setPlace(e.target.value);
+  }
+
+  // 刷新
+  const onRefresh = async () => {
+    if (player) {
+      try {
+        player.destroy();
+      } catch (error) {
+        // 异常处理
+        const canvas = main.getElementsByClassName(styles['view-block'])[0];
+        if (canvas) {
+          main.removeChild(document.getElementsByClassName(styles['view-block'])[0]);
+        }
+      }
+    }
+    await initStream(channel);
   }
 
   return (
     <div
       className={`${styles.main} ${full ? styles.full : ''}`}
-      ref={(dom) => { main = dom }}>
+      ref={(dom) => {
+        dom && (main = dom);
+      }}>
       {/* 窗口区 */}
       {/* 动态插入 */}
       {/* 操作区 */}
-      <div className={styles.control} ref={(dom) => { ctrlDom = dom }}>
+      <div className={styles.control} ref={(dom) => { dom && (ctrlDom = dom) }}>
         <div className={styles['control-block']}>
           <Row gutter={12}>
             <Col span={2} style={{ textAlign: 'right' }}>
@@ -105,19 +144,23 @@ const Camera = () => {
               }
             </Col>
             <Col span={5}>
-              <select name="" id="" style={{ height: '100%', width: '100%' }}>
-                <option value="1">煤仓1</option>
-                <option value="2">煤仓2</option>
+              <select name="" id="" style={{ height: '100%', width: '100%' }} onChange={onSelectPlace}>
+                <option value="1">其他</option>
+                <option value="2">煤矿</option>
+                <option value="3">受煤站</option>
               </select>
             </Col>
             <Col span={5}>
               <select name="" id="" style={{ height: '100%', width: '100%' }} onChange={(e) => changeView(e.target.value)}>
-                <option value="channel1">频道1</option>
-                <option value="channel2">频道2</option>
-                <option value="channel3">频道3</option>
+                {
+                  ChannelList[place].map(item => <option key={item} value={item}>{item === -1 ? '请选择' : `频道-${item}`}</option>)
+                }
               </select>
             </Col>
-            <Col offset={10} span={2} style={{ textAlign: 'right' }}>
+            <Col span={2}>
+              <Icon type="redo" style={{ fontSize: 20, color: '#fff' }} onClick={onRefresh} />
+            </Col>
+            <Col offset={8} span={2} style={{ textAlign: 'right' }}>
               {
                 full ?
                   <Icon type="fullscreen-exit" style={{ fontSize: 20, color: '#fff' }} onClick={changeScreen} /> :
@@ -127,7 +170,7 @@ const Camera = () => {
           </Row>
         </div>
       </div>
-    </div>
+    </div >
   )
 }
 

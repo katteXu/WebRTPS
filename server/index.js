@@ -24,8 +24,16 @@ app.prepare().then(() => {
     }
   });
 
+  router.get('/index/:line', async (ctx) => {
+    const queryParams = { line: ctx.params.line }
+
+    await app.render(ctx.req, ctx.res, '/index', queryParams);
+  })
+
   router.get("*", async (ctx) => {
-    await app.render(ctx.req, ctx.res, ctx.url, ctx.query);
+    // await app.render(ctx.req, ctx.res, ctx.url, ctx.query);
+    await handle(ctx.req, ctx.res);
+    ctx.respond = false;
   });
 
   server.use(async (ctx, next) => {

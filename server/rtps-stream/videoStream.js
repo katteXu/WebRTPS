@@ -20,7 +20,7 @@ class VideoStream extends EventEmitter {
     this.server = new WebSocket.Server({ port: this.port })
     this.server.on('connection', (socket) => {
 
-      console.log(`New connection: ${this.name}`)
+      console.log(`客户端连接创建: ${this.name}`)
 
       let streamHeader = new Buffer(8)
       streamHeader.write(STREAM_MAGIC_BYTES)
@@ -28,7 +28,9 @@ class VideoStream extends EventEmitter {
       streamHeader.writeUInt16BE(this.height, 6)
       socket.send(streamHeader)
 
-      socket.on('close', () => { console.log(`${this.name} disconnected !`) })
+      socket.on('close', () => {
+        console.log(`${this.name} 退出连接 !`);
+      })
     })
 
     this.on('camdata', (data) => {
